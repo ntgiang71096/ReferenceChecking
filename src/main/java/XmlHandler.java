@@ -45,11 +45,17 @@ public class XmlHandler extends DefaultHandler {
     boolean bCrossref;
     boolean bBookTitle;
     Record record;
+    int recordCount = 0;
+
+    ElasticHandler elasticHandler = new ElasticHandler();
+
     ArrayList<String> authorList = new ArrayList<String>();
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException{
         if (isMainTag(qName)){
+            recordCount++;
             record = new Record();
+            record.setId(recordCount);
         } else if (qName.equalsIgnoreCase("title")){
             bTitle = true;
         } else if (qName.equalsIgnoreCase("author")){
@@ -92,6 +98,23 @@ public class XmlHandler extends DefaultHandler {
     }
 
     private void indexRecordToElasticSearch() {
+
+        elasticHandler.indexRecord(client, record);
+
+//        System.out.println(record.getTitle());
+//        for (String author : record.getAuthorList()){
+//            System.out.println(author);
+//        }
+//        System.out.println(record.getPages());
+//        System.out.println(record.getDoi());
+//        System.out.println(record.getYear());
+//        System.out.println(record.getVolume());
+//        System.out.println(record.getJournal());
+//        System.out.println(record.getNumber());
+//        System.out.println(record.getUrl());
+//        System.out.println(record.getCrossref());
+//        System.out.println(record.getBookTitle());
+
 
     }
 
@@ -141,7 +164,7 @@ public class XmlHandler extends DefaultHandler {
         TransportAddress address = null;
         try {
             address = new TransportAddress(InetAddress.getByName("localhost"), 9300);
-            Client client = new PreBuiltTransportClient(Settings.EMPTY).addTransportAddress(address);
+            client = new PreBuiltTransportClient(Settings.EMPTY).addTransportAddress(address);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

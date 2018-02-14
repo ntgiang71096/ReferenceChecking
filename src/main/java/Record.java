@@ -5,7 +5,7 @@ import java.util.ArrayList;
  */
 public class Record {
 
-
+    private int id;
     private String type;
     private String title;
     private ArrayList<String> authorList;
@@ -19,6 +19,13 @@ public class Record {
     private String crossref;
     private String bookTitle;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Record(){
         this.authorList = new ArrayList<String>();
@@ -116,9 +123,8 @@ public class Record {
         return bookTitle;
     }
 
-    public void setBookTitle(String bookTitle) {
-        this.bookTitle = bookTitle;
-    }
+    public void setBookTitle(String bookTitle) {this.bookTitle = bookTitle;}
+
     public void addAuthor(String author){
         this.authorList.add(author);
     }

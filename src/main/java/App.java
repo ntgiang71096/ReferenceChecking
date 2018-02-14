@@ -66,7 +66,7 @@ public class App {
             SAXParser saxParser = saxParserFactory.newSAXParser();
             XmlHandler handler = new XmlHandler();
             handler.initClient();
-            saxParser.parse(new File("C:\\Users\\GiangNT\\Desktop\\dblp\\dblp.xml"), handler);
+            saxParser.parse(new File("C:\\Users\\GiangNT\\Desktop\\dblp\\test.xml"), handler);
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (ParserConfigurationException e) {
