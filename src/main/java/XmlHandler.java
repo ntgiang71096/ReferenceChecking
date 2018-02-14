@@ -165,6 +165,7 @@ public class XmlHandler extends DefaultHandler {
         try {
             address = new TransportAddress(InetAddress.getByName("localhost"), 9300);
             client = new PreBuiltTransportClient(Settings.EMPTY).addTransportAddress(address);
+            System.out.println("client initiated");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
