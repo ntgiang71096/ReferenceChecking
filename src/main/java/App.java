@@ -64,9 +64,12 @@ public class App {
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
         try{
             SAXParser saxParser = saxParserFactory.newSAXParser();
+            org.apache.xerces.util.SecurityManager mgr = new org.apache.xerces.util.SecurityManager();
+            mgr.setEntityExpansionLimit(5000000);
+            saxParser.setProperty("http://apache.org/xml/properties/security-manager", mgr);
             XmlHandler handler = new XmlHandler();
             handler.initClient();
-            saxParser.parse(new File("C:\\Users\\GiangNT\\Desktop\\dblp\\test.xml"), handler);
+            saxParser.parse(new File("C:\\Users\\GiangNT\\Desktop\\dblp\\dblp.xml"), handler);
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (ParserConfigurationException e) {

@@ -1,6 +1,8 @@
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -46,7 +48,7 @@ public class XmlHandler extends DefaultHandler {
     boolean bBookTitle;
     Record record;
     int recordCount = 0;
-
+    long hitsCount = 0;
     ElasticHandler elasticHandler = new ElasticHandler();
 
     ArrayList<String> authorList = new ArrayList<String>();
@@ -54,6 +56,10 @@ public class XmlHandler extends DefaultHandler {
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException{
         if (isMainTag(qName)){
             recordCount++;
+            if (recordCount <= hitsCount){
+                System.out.println("id: " + recordCount);
+                return;
+            }
             record = new Record();
             record.setId(recordCount);
         } else if (qName.equalsIgnoreCase("title")){
@@ -92,7 +98,8 @@ public class XmlHandler extends DefaultHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException{
-        if (isMainTag(qName)){
+        if (isMainTag(qName) && recordCount > hitsCount){
+            System.out.println("id: " + recordCount);
             indexRecordToElasticSearch();
         }
     }
@@ -120,6 +127,9 @@ public class XmlHandler extends DefaultHandler {
 
     @Override
     public void characters(char ch[], int start, int length) throws SAXException{
+        if (recordCount <= hitsCount){
+            return;
+        }
         if (bTitle){
             record.setTitle(new String(ch, start, length));
             bTitle = false;
@@ -145,7 +155,7 @@ public class XmlHandler extends DefaultHandler {
             record.setDoi(new String(ch, start, length));
             bDoi = false;
         } else if (bUrl){
-            record.setBookTitle(new String(ch, start, length));
+            record.setUrl(new String(ch, start, length));
             bUrl = false;
         } else if (bCrossref){
             record.setCrossref(new String(ch, start, length));
@@ -166,6 +176,10 @@ public class XmlHandler extends DefaultHandler {
             address = new TransportAddress(InetAddress.getByName("localhost"), 9300);
             client = new PreBuiltTransportClient(Settings.EMPTY).addTransportAddress(address);
             System.out.println("client initiated");
+            SearchResponse response = client.prepareSearch("record").get();
+            SearchHits hits = response.getHits();
+            hitsCount = hits.getTotalHits();
+            System.out.println("Number of record indexed: " + hitsCount);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
