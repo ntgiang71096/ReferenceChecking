@@ -22,13 +22,14 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
  */
 public class Demo {
     public static void main(String[] args) {
+//        System.out.println(args[0]);
 //
-        TransportAddress address = null;
-        try {
-            address = new TransportAddress(InetAddress.getByName("localhost"), 9300);
-            Client client = new PreBuiltTransportClient(Settings.EMPTY).addTransportAddress(address);
-
-            DeleteIndexResponse deleteResponse = client.admin().indices().delete(new DeleteIndexRequest("record")).actionGet();
+//        TransportAddress address = null;
+//        try {
+//            address = new TransportAddress(InetAddress.getByName("localhost"), 9300);
+//            Client client = new PreBuiltTransportClient(Settings.EMPTY).addTransportAddress(address);
+//
+//            DeleteIndexResponse deleteResponse = client.admin().indices().delete(new DeleteIndexRequest("record")).actionGet();
 
 //            DeleteIndexResponse deleteResponse = client.admin().indices().delete(new DeleteIndexRequest("record")).actionGet();
 
@@ -50,10 +51,10 @@ public class Demo {
 //                            .endObject()
 //                    )
 //                    .get();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        } catch (UnknownHostException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 }

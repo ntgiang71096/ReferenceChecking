@@ -56,35 +56,39 @@ public class XmlHandler extends DefaultHandler {
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException{
         if (isMainTag(qName)){
             recordCount++;
-            if (recordCount <= hitsCount){
-                System.out.println("id: " + recordCount);
-                return;
-            }
-            record = new Record();
-            record.setId(recordCount);
-        } else if (qName.equalsIgnoreCase("title")){
-            bTitle = true;
-        } else if (qName.equalsIgnoreCase("author")){
-            bAuthor = true;
-        } else if (qName.equalsIgnoreCase("pages")){
-            bPages = true;
-        } else if (qName.equalsIgnoreCase("year")){
-            bYear = true;
-        } else if (qName.equalsIgnoreCase("volume")){
-            bVolume = true;
-        } else if (qName.equalsIgnoreCase("journal")){
-            bJournal = true;
-        } else if (qName.equalsIgnoreCase("number")){
-            bNumber = true;
-        } else if (qName.equalsIgnoreCase("ee")){
-            bDoi = true;
-        } else if (qName.equalsIgnoreCase("url")){
-            bUrl = true;
-        } else if (qName.equalsIgnoreCase("crossref")){
-            bCrossref = true;
-        } else if (qName.equalsIgnoreCase("booktitle")){
-            bBookTitle = true;
+            System.out.println("id: " + recordCount + "     " + qName);
         }
+//        if (isMainTag(qName)){
+//            recordCount++;
+//            if (recordCount <= hitsCount){
+//                System.out.println("id: " + recordCount);
+//                return;
+//            }
+//            record = new Record();
+//            record.setId(recordCount);
+//        } else if (qName.equalsIgnoreCase("title")){
+//            bTitle = true;
+//        } else if (qName.equalsIgnoreCase("author")){
+//            bAuthor = true;
+//        } else if (qName.equalsIgnoreCase("pages")){
+//            bPages = true;
+//        } else if (qName.equalsIgnoreCase("year")){
+//            bYear = true;
+//        } else if (qName.equalsIgnoreCase("volume")){
+//            bVolume = true;
+//        } else if (qName.equalsIgnoreCase("journal")){
+//            bJournal = true;
+//        } else if (qName.equalsIgnoreCase("number")){
+//            bNumber = true;
+//        } else if (qName.equalsIgnoreCase("ee")){
+//            bDoi = true;
+//        } else if (qName.equalsIgnoreCase("url")){
+//            bUrl = true;
+//        } else if (qName.equalsIgnoreCase("crossref")){
+//            bCrossref = true;
+//        } else if (qName.equalsIgnoreCase("booktitle")){
+//            bBookTitle = true;
+//        }
     }
 
     private boolean isMainTag(String qName) {
@@ -98,10 +102,17 @@ public class XmlHandler extends DefaultHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException{
-        if (isMainTag(qName) && recordCount > hitsCount){
-            System.out.println("id: " + recordCount);
-            indexRecordToElasticSearch();
+        if (isMainTag(qName)){
+            partailUpdateRecordToElasticSearch(qName,recordCount);
         }
+//        if (isMainTag(qName) && recordCount > hitsCount){
+//            System.out.println("id: " + recordCount);
+//            indexRecordToElasticSearch();
+//        }
+    }
+
+    private void partailUpdateRecordToElasticSearch(String qName, int recordCount) {
+        elasticHandler.partialUpdateRecord(client,qName,recordCount);
     }
 
     private void indexRecordToElasticSearch() {

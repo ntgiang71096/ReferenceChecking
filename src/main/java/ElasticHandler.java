@@ -1,8 +1,10 @@
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.*;
 
@@ -66,5 +68,20 @@ public class ElasticHandler {
 
 
 
+    }
+
+    public void partialUpdateRecord(Client client, String qName, int recordCount) {
+
+        try {
+            UpdateRequest updateRequest = new UpdateRequest
+                    ("record", "id", String.valueOf(recordCount)).doc(jsonBuilder().startObject().field("type",qName).endObject());
+            client.update(updateRequest).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
